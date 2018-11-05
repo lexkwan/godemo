@@ -23,23 +23,27 @@ func handleConnection(conn net.Conn) {
 	for {
 		bytes, err := reader.ReadBytes(byte('\n'))
 		if err != nil {
+			if err.Error() == "EOF" {
+				fmt.Println("Connection closed:", conn.RemoteAddr())
+				return
+			}
 			fmt.Println("failed to read data, err:", err)
 			return
 		}
 
-		fmt.Printf("Got : %s", bytes)
+		// fmt.Printf("Got : %s", bytes)
 
 		line := fmt.Sprintf("%s", bytes)
 		templine := strings.Trim(line, "\n")
 		if len(templine) > 0 {
 			num, err := strconv.Atoi(templine)
 
-			fmt.Println("num is ", num)
+			// fmt.Println("num is ", num)
 			if err != nil {
 				fmt.Println("failed to conver string to int, err:", err)
 			}
 			result := fib(num)
-			fmt.Println("Result :", result)
+			// fmt.Println("Result :", result)
 			conn.Write([]byte(strconv.Itoa(result) + "\n"))
 		}
 
@@ -54,6 +58,7 @@ func main() {
 	}
 	for {
 		conn, err := listener.Accept()
+		fmt.Println(conn.RemoteAddr())
 		if err != nil {
 			fmt.Println("failed to accept connection, err:", err)
 			continue

@@ -16,7 +16,7 @@ def monitor():
 Thread(target=monitor).start()
 
 while True:
-    sock.send(b'1')
+    sock.send(b'1\n')
     resp = sock.recv(100)
     n += 1
 
